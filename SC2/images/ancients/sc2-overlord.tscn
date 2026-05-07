@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://ctfrim23aj023"]
+
+[ext_resource type="Texture2D" uid="uid://nmfinnnmiep" path="res://SC2/images/ancients/overlord_placeholder.png" id="1_k68g4"]
+
+[node name="Node2D" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="OverlordPlaceholder" type="Sprite2D" parent="."]
+position = Vector2(945, 541)
+scale = Vector2(1.9539999, 2.0693161)
+texture = ExtResource("1_k68g4")

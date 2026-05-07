@@ -1,0 +1,4 @@
+﻿{
+  "SC2-CORROSIVE_STRIKE.description":  "Deal {Damage:diff()} damage. Apply half of unblocked damage as poison.",
+  "SC2-CORROSIVE_STRIKE.title": "Corrosive Strike"
+}
