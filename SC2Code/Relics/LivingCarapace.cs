@@ -27,34 +27,28 @@ public  class LivingCarapace : Sc2RelicModel
     
     protected override IEnumerable<DynamicVar> CanonicalVars => [new DynamicVar("Sacrifices", 3M),new HealVar(1M),new MaxHpVar(10M)];
     
-    public override int DisplayAmount
-    {
-        get
-        {
-            return !this.IsActivating ? this.RewardsSacrificed % this.DynamicVars["Sacrifices"].IntValue : this.DynamicVars["Sacrifices"].IntValue;
-        }
-    }
-    
+    public override int DisplayAmount => !IsActivating ? RewardsSacrificed % DynamicVars["Sacrifices"].IntValue : DynamicVars["Sacrifices"].IntValue;
+
     private bool IsActivating
     {
-        get => this._isActivating;
+        get => _isActivating;
         set
         {
-            this.AssertMutable();
-            this._isActivating = value;
-            this.InvokeDisplayAmountChanged();
+            AssertMutable();
+            _isActivating = value;
+            InvokeDisplayAmountChanged();
         }
     }
     
     [SavedProperty]
-    public int RewardsSacrificed
+    private int RewardsSacrificed
     {
-        get => this._rewardsSacrificed;
+        get => _rewardsSacrificed;
         set
         {
-            this.AssertMutable();
-            this._rewardsSacrificed = value;
-            this.InvokeDisplayAmountChanged();
+            AssertMutable();
+            _rewardsSacrificed = value;
+            InvokeDisplayAmountChanged();
         }
     }
     
@@ -64,7 +58,7 @@ public  class LivingCarapace : Sc2RelicModel
         {
             return false;
         }
-        alternatives.Add(new CardRewardAlternative("ABSORB", OnAbsorbCard, PostAlternateCardRewardAction.DismissScreenAndRemoveReward));
+        alternatives.Add(new CardRewardAlternative("ABSORB", OnAbsorbCard, PostAlternateCardRewardAction.EndSelectionAndCompleteReward));
         return true;
     }
 
@@ -84,14 +78,17 @@ public  class LivingCarapace : Sc2RelicModel
         await CreatureCmd.Heal(livingCarapace.Owner.Creature, livingCarapace.DynamicVars.Heal.BaseValue);
         if (livingCarapace.RewardsSacrificed % livingCarapace.DynamicVars["Sacrifices"].IntValue != 0)
             return;
-        await TaskHelper.RunSafely(livingCarapace.DoActivateVisuals());
         await CreatureCmd.GainMaxHp(livingCarapace.Owner.Creature, livingCarapace.DynamicVars.MaxHp.BaseValue);
     }
 
     private async Task DoActivateVisuals()
     {
-        this.IsActivating = true;
-        await Cmd.Wait(1f);
+        if (RewardsSacrificed % DynamicVars["Sacrifices"].IntValue == 0)
+        {
+            this.IsActivating = true;
+        }
+        
+        await Cmd.Wait(0.5f);
         this.IsActivating = false;
     }
 }
